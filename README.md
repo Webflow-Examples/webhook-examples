@@ -28,11 +28,11 @@ Once the webhooks are added, they will appear in your Webflow site under Project
 
 Now, as we create and delete items in our CMS, our server can respond to those changes. Here's a screenshot of server logs responding to newly created items.
 
-<img src="https://wadoodh.github.io/images/webhook-logs.png" alt="server logs showing successful api operation">
+<img src="https://wadoodh.github.io/images/webhook-logs-new.png" alt="server logs showing successful api operation">
 
 # The Javascript
 
-## Collection item created
+### Collection item created
 
 ```js
 // return if newly created item is not in the right collection
@@ -110,7 +110,7 @@ return index
   .catch((err) => console.log(err));
 ```
 
-## Collection item deleted
+### Collection item deleted
 
 ```js
 // return if newly created item is not in the right collection
