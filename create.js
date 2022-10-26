@@ -1,40 +1,3 @@
-# Webhook Examples
-
-Automatically perform actions as CMS data changes in Webflow through webhooks.
-
-# How it works
-
-The Webflow API includes [webhook trigger types](https://developers.webflow.com/#triggertype) that allow you to tie into certain events. Using these triggers, we can write additional code to connect to other apis.
-
-In this example, we'll look at how we can update an Algolia search index when data is added and deleted in Webflow. This will allow data to remain in sync between Webflow and the external platform (i.e., search index) as we change our collections in these scenarios.
-
-**Note:** _this repo looks at the `collection_item_created` and `collection_item_deleted` triggers. Apply the same concept for the `collection_item_changed` trigger to ensure the external platform is updated collection data is changed._
-
-# Adding webhooks
-
-These webhooks must be added through the Webflow API. We can use a tool like Postman to accomplish this.
-
-### Collection item created
-
-<img src="https://wadoodh.github.io/images/collection-item-created-webhook.png" alt="collection-item-created-webhook">
-
-### Collection item deleted
-
-<img src="https://wadoodh.github.io/images/collection-item-deleted-webhook.png" alt="collection-item-deleted-webhook">
-
-Once the webhooks are added, they will appear in your Webflow site under Project settings > Integrations > Webhooks.
-
-<img src="https://wadoodh.github.io/images/webhooks-in-project.png" alt="collection-item-deleted-webhook">
-
-Now, as we create and delete items in our CMS, our server can respond to those changes. Here's a screenshot of server logs responding to newly created items.
-
-<img src="https://wadoodh.github.io/images/webhook-logs.png" alt="server logs showing successful api operation">
-
-# The Javascript
-
-## Collection item created
-
-```js
 // return if newly created item is not in the right collection
 const moviesCollection = "6353176f2cf2501b7755dae3";
 if (context.params._cid !== moviesCollection) return;
@@ -108,32 +71,3 @@ return index
   .saveObject(newMovie, { autoGenerateObjectIDIfNotExist: true })
   .then(() => console.log("object added to index"))
   .catch((err) => console.log(err));
-```
-
-## Collection item deleted
-
-```js
-// return if newly created item is not in the right collection
-const moviesCollection = "6353176f2cf2501b7755dae3";
-if (context.params._cid !== moviesCollection) return;
-
-// import external package, using algolia in this example
-import algoliasearch from "algoliasearch";
-
-//establish connection to algolia dashboard
-const client = algoliasearch(
-  process.env.ALGOLIA_APP_ID,
-  process.env.ALGOLIA_ADMIN_API_KEY
-);
-// declare index to work with
-const index = client.initIndex("movies");
-
-// destructure relevant id
-const { itemId } = context.params;
-
-// make api call to algolia index to delete item
-return index
-  .deleteObject(itemId)
-  .then(() => console.log("Item deleted from search index"))
-  .catch((err) => console.log(err));
-```
